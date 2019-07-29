@@ -31,3 +31,71 @@
   Для разных устройств, используемых одним клиентом, возможно использование
   адреса вида <localpart@domainpart/resourcepart>
   (например <juliet@im.example.com/balcony>).
+
+Структуры xml
+  Запрос на начало работы
+   I: <?xml version='1.0'?>
+      <stream:stream
+          from='juliet@im.example.com'
+          to='im.example.com'>
+
+  Ответ начала работы
+   R: <?xml version='1.0'?>
+      <stream:stream
+          from='im.example.com'
+          id='++TR84Sm6A3hnt3Q065SnAbbk3Y='
+          to='juliet@im.example.com'>
+
+  Закрытие потока тегом
+   E: </stream:stream>
+
+  Аттрибуты
+   from
+   to
+   id - уникальный ИД потока XML
+   xml:lang - язык (при необходимости)
+
+Обрыв соединения
+  Проверка доступности сервера/клиента отправкой пробельного символа
+  Если TCP не работает, закрываться с тегом </connection-timeout>
+  Закрывать соединения только если оба закончили передачу и оправили </stream>
+
+
+Простейшее соединение
+
+   C: <?xml version='1.0'?>
+      <stream:stream
+          from='juliet@im.example.com'
+          to='im.example.com'
+          version='1.0'
+          xml:lang='en'
+          xmlns='jabber:client'
+          xmlns:stream='http://etherx.jabber.org/streams'>
+
+   S: <?xml version='1.0'?>
+      <stream:stream
+          from='im.example.com'
+          id='++TR84Sm6A3hnt3Q065SnAbbk3Y='
+          to='juliet@im.example.com'
+          version='1.0'
+          xml:lang='en'
+          xmlns='jabber:client'
+          xmlns:stream='http://etherx.jabber.org/streams'>
+
+   [ ... stream negotiation ... ]
+
+   C:   <message from='juliet@im.example.com/balcony'
+                 to='romeo@example.net'
+                 xml:lang='en'>
+          <body>Art thou not Romeo, and a Montague?</body>
+        </message>
+
+   S:   <message from='romeo@example.net/orchard'
+                 to='juliet@im.example.com/balcony'
+                 xml:lang='en'>
+          <body>Neither, fair saint, if either thee dislike.</body>
+        </message>
+
+   C: </stream:stream>
+
+   S: </stream:stream>
